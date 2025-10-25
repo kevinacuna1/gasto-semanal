@@ -16,6 +16,12 @@ class Presupuesto {
         this.restante = Number(presupuesto);
         this.gastos = [];
     }
+
+    agregarGasto(gasto) {
+        this.gastos = [...this.gastos, gasto];
+        this.restante -= gasto.cantidad;
+        console.log(this.gastos);
+    }
 }
 
 class UI {
@@ -31,7 +37,7 @@ class UI {
     inprimirAlerta(mensaje, tipo) {
         // Crear el div
         const divMensaje = document.createElement('div');
-        divMensaje.classList.add('text-center', 'alert');        
+        divMensaje.classList.add('text-center', 'alert');
 
         // Agregar clase según el tipo de mensaje
         if (tipo === 'error') {
@@ -89,5 +95,15 @@ function agregarGasto(e) {
     }
 
     // Si todo es correcto, agregar el gasto
-    console.log('Gasto agregado');
+    // Generar un objeto con el gasto
+    const gasto = { nombre, cantidad: Number(cantidad), id: Date.now() };
+
+    // Añadir un nuevo gasto
+    presupuesto.agregarGasto(gasto);
+
+    // Mensaje de todo bien
+    ui.inprimirAlerta('Gasto agregado correctamente');
+
+    // Reiniciar el formulario
+    formulario.reset();
 }
