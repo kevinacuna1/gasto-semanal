@@ -26,6 +26,11 @@ class Presupuesto {
         const gastado = this.gastos.reduce((total, gasto) => total + gasto.cantidad, 0);
         this.restante = this.presupuesto - gastado;
     }
+
+    eliminarGasto(id) {
+        this.gastos = this.gastos.filter(gasto => gasto.id !== id);
+        this.calcularRestante();
+    }
 }
 
 class UI {
@@ -61,7 +66,7 @@ class UI {
         }, 3000);
     }
 
-    agregarGastoListado(gastos) {
+    mostrarGastos(gastos) {
         // Limpiar el HTML
         this.limpiarHTML();
 
@@ -85,8 +90,7 @@ class UI {
             btnBorrar.innerHTML = 'Borrar &times;';
             btnBorrar.onclick = () => {
                 // Eliminar el gasto
-                presupuesto.eliminarGasto(id);
-                ui.agregarGastoListado(presupuesto.gastos);
+                eliminarGasto(id);
             };
 
             nuevoGasto.appendChild(btnBorrar);
@@ -115,7 +119,7 @@ class UI {
         if (presupuesto / 4 > restante) {
             restanteDiv.classList.remove('alert-success', 'alert-warning');
             restanteDiv.classList.add('alert-danger');
-        // Comprobar el 50%
+            // Comprobar el 50%
         } else if (presupuesto / 2 > restante) {
             restanteDiv.classList.remove('alert-success');
             restanteDiv.classList.add('alert-warning');
@@ -181,7 +185,7 @@ function agregarGasto(e) {
     // Agregar al HTML
     const { gastos, restante } = presupuesto;
 
-    ui.agregarGastoListado(gastos);
+    ui.mostrarGastos(gastos);
 
     ui.ActualizarRestante(restante);
 
@@ -189,4 +193,21 @@ function agregarGasto(e) {
 
     // Reiniciar el formulario
     formulario.reset();
+}
+
+function eliminarGasto(id) {
+    // Eliminar el gasto
+    presupuesto.eliminarGasto(id);
+
+    // Mensaje de confirmación
+    ui.inprimirAlerta('Gasto eliminado correctamente. Dinero Reembolsado.');
+
+    // Actualizar el restante
+    const { gastos, restante } = presupuesto;
+
+    ui.mostrarGastos(gastos);
+
+    ui.ActualizarRestante(restante);
+
+    ui.ComprobarPresupuesto(presupuesto);
 }
