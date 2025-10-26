@@ -56,6 +56,47 @@ class UI {
             divMensaje.remove();
         }, 3000);
     }
+
+    agregarGastoListado(gastos) {
+        // Limpiar el HTML
+        this.limpiarHTML();
+
+        gastos.forEach(gasto => {
+            const { nombre, cantidad, id } = gasto;
+
+            // Crear un li
+            const nuevoGasto = document.createElement('li');
+            nuevoGasto.className =
+                'list-group-item d-flex justify-content-between align-items-center';
+            nuevoGasto.dataset.id = id;
+
+            // Agregar el gasto
+            nuevoGasto.innerHTML = `
+                ${nombre} <span class="badge badge-primary badge-pill">$ ${cantidad}</span>
+            `;
+
+            // Boton de borrar el gasto
+            const btnBorrar = document.createElement('button');
+            btnBorrar.classList.add('btn', 'btn-danger', 'borrar-gasto');
+            btnBorrar.innerHTML = 'Borrar &times;';
+            btnBorrar.onclick = () => {
+                // Eliminar el gasto
+                presupuesto.eliminarGasto(id);
+                ui.agregarGastoListado(presupuesto.gastos);
+            };
+
+            nuevoGasto.appendChild(btnBorrar);
+
+            // Agregar al HTML
+            gastoListado.appendChild(nuevoGasto);
+        });
+    }
+
+    limpiarHTML() {
+        while (gastoListado.firstChild) {
+            gastoListado.removeChild(gastoListado.firstChild);
+        }
+    }
 }
 
 // Instanciar
@@ -103,6 +144,9 @@ function agregarGasto(e) {
 
     // Mensaje de todo bien
     ui.inprimirAlerta('Gasto agregado correctamente');
+
+    // Agregar al HTML
+    ui.agregarGastoListado(presupuesto.gastos);
 
     // Reiniciar el formulario
     formulario.reset();
